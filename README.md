@@ -1,69 +1,36 @@
-# Veri.Ai
-
-Veri.Ai is a Content Authenticity SaaS platform designed to detect AI-generated media (images, videos, audio, text) and verify authenticity.
-
-## Project Structure
-
-This repository contains the source code for the entire Veri.Ai ecosystem:
-
-- **`frontend/`**: The Next.js web application (Landing Page + Dashboard). Based on `create-next-app` with Tailwind CSS.
-- **`backend/`**: The FastAPI backend service for handling verification requests and integrating with AI models.
-- **`extension/`**: The Browser Extension (Chrome Manifest V3) for quick content verification.
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
-### Prerequisites
-
-- **Node.js** (v18+)
-- **Python** (v3.9+)
-- **Chrome/Edge** (for extension testing)
-
-### 1. Frontend Setup (Web App)
-
-Navigate to the `frontend` directory:
+First, run the development server:
 
 ```bash
-cd frontend
-npm install
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-The app will be available at [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### 2. Backend Setup (API)
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-Navigate to the `backend` directory:
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-```bash
-cd backend
-# Create a virtual environment (optional but recommended)
-python -m venv venv
-# Activate virtual environment:
-# Windows: venv\Scripts\activate
-# Mac/Linux: source venv/bin/activate
+## Learn More
 
-pip install -r requirements.txt
-uvicorn main:app --reload
-```
+To learn more about Next.js, take a look at the following resources:
 
-The API will be available at [http://localhost:8000](http://localhost:8000).
-API documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs).
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-### 3. Extension Setup
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-1. Open Chrome and navigate to `chrome://extensions/`.
-2. Enable **Developer mode** (toggle in the top-right corner).
-3. Click **Load unpacked**.
-4. Select the `extension` folder in this repository.
-5. The Veri.Ai extension should now be visible in your toolbar.
+## Deploy on Vercel
 
-## Tech Stack
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-- **Frontend**: Next.js, Tailwind CSS, Framer Motion (planned), Aceternity UI/Magic UI (recommended).
-- **Backend**: FastAPI, Python.
-- **Extension**: Vanilla JS + Chrome Extension API (Manifest V3).
-- **AI Models**: placeholder logic currently implemented; integration with Hive AI/GPTZero planned.
-
-## License
-
-Private.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

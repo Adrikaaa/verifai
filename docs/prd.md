@@ -75,6 +75,30 @@ Sections required:
 * Footer (links)
 
 Goals:
+⭐ 1. Hero Section (Above the Fold)
+
+This should look like your screenshot but cleaner, more structured.
+
+Elements:
+
+Logo (left)
+
+Nav (Product | Features | Pricing | Docs)
+
+Buttons (Sign in | Get Started)
+
+Hero Content:
+
+Big headline (keep your vibe):
+“AI can fake anything. We help you see the truth.”
+
+Subheadline (keep short & sharp):
+Instantly verify the authenticity of images, videos, voices, and text using advanced AI detection.
+
+Primary CTA button: Start Detecting Free
+
+Secondary CTA: See How It Works →
+
 
 * Convert visitors to sign up
 * Collect emails / free-tier registrations
