@@ -10,16 +10,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Chrome, Github } from "lucide-react";
-import { signIn } from "@/auth";
+import { signIn } from "../../auth";
 
-async function handleGoogleSignIn(){
-"use server"
-await signIn("google")
+async function handleGoogleSignIn() {
+  "use server"
+  await signIn("google")
 }
 
-async function handleGithubSignIn(){
-"use server"
-await signIn("github")
+async function handleGithubSignIn() {
+  "use server"
+  await signIn("github")
 }
 
 const SignInFormClient = () => {

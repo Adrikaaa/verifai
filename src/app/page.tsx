@@ -16,16 +16,17 @@ const Antigravity = dynamic(() => import("@/components/Antigravity"), {
 
 export default function Home() {
   return (
-    <div className="relative w-full min-h-screen overflow-hidden">
-      {/* 🔵 New background */}
+    <div className="relative w-full min-h-screen overflow-x-hidden">
+      {/* Black background */}
       <div
         className="absolute inset-0 z-0"
         style={{
           background: "#000",
+          minHeight: "100vh"
         }}
       />
 
-      {/* 🔹 Subtle Antigravity Layer */}
+      {/* Antigravity Layer with original settings */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-60">
         <Antigravity
           count={120}
@@ -33,9 +34,9 @@ export default function Home() {
           ringRadius={3}
           waveSpeed={0.08}
           waveAmplitude={0.4}
-          particleSize={0.25} // SUPER SMALL
-          lerpSpeed={0.015} // SMOOTH + SLOW
-          color="#A855F7"
+          particleSize={0.25}
+          lerpSpeed={0.015}
+          color="#3b82f6"
           autoAnimate
           particleVariance={0.5}
           rotationSpeed={0.05}
@@ -52,7 +53,7 @@ export default function Home() {
       {/* Content */}
       <div className="relative z-10">
         <Navbar />
-        <main>
+        <main className="w-full">
           <Hero />
           <HowItWorks />
           <Features />

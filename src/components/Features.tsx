@@ -6,6 +6,7 @@ import Play from "./play";
 import { Copy } from "./Copy";
 import { PlugIcon } from "lucide-react";
 import { Headphones } from "lucide-react";
+import ExtensionPrompt from "./ExtensionPrompt";
 
 const bentoItems = [
   {
@@ -172,6 +173,12 @@ export default function Features() {
           ))}
         </motion.div>
       </div>
+
+      {/* Extension Prompt after Features */}
+      <ExtensionPrompt 
+        title="Real-Time Detection for Every Format"
+        description="Add our Chrome extension to instantly scan images, text, videos, and audio while browsing. Get real-time alerts for AI-generated content across all platforms."
+      />
 
       {/* Media query for mobile */}
       <style jsx>{`

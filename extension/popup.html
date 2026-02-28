@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=400, initial-scale=1.0" />
+  <title>VerifAI</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- HEADER -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">🛡️</span>
+        <span class="logo-text">VerifAI</span>
+      </div>
+      <button id="logoutBtn" class="btn-ghost" style="display:none;">Logout</button>
+    </header>
+
+    <!-- AUTH SECTION (shown when not logged in) -->
+    <div id="authSection">
+      <div class="auth-card">
+        <h2 class="auth-title">Welcome to VerifAI</h2>
+        <p class="auth-subtitle">Real-time AI detection in your browser</p>
+
+        <div class="tabs">
+          <button class="tab active" data-tab="login">Login</button>
+          <button class="tab" data-tab="register">Register</button>
+        </div>
+
+        <form id="authForm">
+          <div class="input-group">
+            <label>Email</label>
+            <input type="email" id="emailInput" placeholder="you@email.com" required />
+          </div>
+          <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="passwordInput" placeholder="••••••" required />
+          </div>
+          <button type="submit" id="authSubmitBtn" class="btn-primary">Get Started</button>
+          <p id="authError" class="error-text"></p>
+        </form>
+
+        <p class="free-badge">🎁 5 free scans included!</p>
+      </div>
+    </div>
+
+    <!-- MAIN SECTION (shown when logged in) -->
+    <div id="mainSection" style="display:none;">
+
+      <!-- Scan Counter -->
+      <div class="scan-counter">
+        <div class="counter-ring">
+          <svg viewBox="0 0 100 100">
+            <circle class="ring-bg" cx="50" cy="50" r="42" />
+            <circle id="ringProgress" class="ring-fill" cx="50" cy="50" r="42" />
+          </svg>
+          <div class="counter-text">
+            <span id="scansRemaining" class="counter-number">5</span>
+            <span class="counter-label">left</span>
+          </div>
+        </div>
+        <div class="counter-info">
+          <p class="counter-title">Free Scans</p>
+          <p id="scanUsageText" class="counter-desc">0 / 5 used</p>
+        </div>
+      </div>
+
+      <!-- Quick Scan -->
+      <div class="scan-section">
+        <h3>Quick Scan</h3>
+        <div class="scan-input-group">
+          <input type="text" id="urlInput" placeholder="Paste link here..." />
+          <button id="scanBtn" class="btn-primary btn-scan">Scan</button>
+        </div>
+        <p class="hint">💡 Right-click any link → "Scan with VerifAI"</p>
+      </div>
+
+      <!-- Loading -->
+      <div id="scanLoading" class="loading-section" style="display:none;">
+        <div class="spinner"></div>
+        <p>Analyzing content through 6 stages...</p>
+        <div class="pipeline-steps">
+          <span class="step active">Metadata</span>
+          <span class="step">Semantic</span>
+          <span class="step">Visual</span>
+          <span class="step">Audio</span>
+          <span class="step">FFT</span>
+          <span class="step">Verdict</span>
+        </div>
+      </div>
+
+      <!-- Latest Result -->
+      <div id="resultSection" style="display:none;">
+        <div id="resultCard" class="result-card">
+          <div class="result-header">
+            <span id="resultEmoji" class="result-emoji">✅</span>
+            <div>
+              <h3 id="resultVerdict" class="result-verdict">AUTHENTIC</h3>
+              <p id="resultScore" class="result-score">Suspicion: 12%</p>
+            </div>
+          </div>
+
+          <div class="result-stages">
+            <div class="stage-row">
+              <span class="stage-name">📋 Metadata</span>
+              <div class="stage-bar"><div id="metadataBar" class="stage-fill"></div></div>
+              <span id="metadataScore" class="stage-val">0%</span>
+            </div>
+            <div class="stage-row">
+              <span class="stage-name">🧠 Semantic</span>
+              <div class="stage-bar"><div id="semanticBar" class="stage-fill"></div></div>
+              <span id="semanticScore" class="stage-val">0%</span>
+            </div>
+            <div class="stage-row">
+              <span class="stage-name">👁️ Visual</span>
+              <div class="stage-bar"><div id="visualBar" class="stage-fill"></div></div>
+              <span id="visualScore" class="stage-val">0%</span>
+            </div>
+            <div class="stage-row">
+              <span class="stage-name">🎤 Audio</span>
+              <div class="stage-bar"><div id="audioBar" class="stage-fill"></div></div>
+              <span id="audioScore" class="stage-val">0%</span>
+            </div>
+            <div class="stage-row">
+              <span class="stage-name">📊 FFT</span>
+              <div class="stage-bar"><div id="fftBar" class="stage-fill"></div></div>
+              <span id="fftScore" class="stage-val">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Scans -->
+      <div class="history-section">
+        <h3>Recent Scans</h3>
+        <div id="historyList" class="history-list">
+          <p class="empty-state">No scans yet. Start scanning!</p>
+        </div>
+      </div>
+
+      <!-- Upgrade CTA -->
+      <div id="upgradeCta" class="upgrade-cta" style="display:none;">
+        <p>🔒 You've used all free scans</p>
+        <a href="http://localhost:3000" target="_blank" class="btn-upgrade">Upgrade to Pro →</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

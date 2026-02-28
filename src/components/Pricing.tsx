@@ -8,8 +8,8 @@ const plans = [
   {
     name: "Free",
     price: "$0",
-    period: "forever",
-    description: "Get started with basic detection",
+    period: "/month",
+    description: "Start detecting with basic tools",
     features: [
       "10 scans/day",
       "Image & text detection",
@@ -20,35 +20,19 @@ const plans = [
     highlighted: false,
   },
   {
-    name: "Pro",
-    price: "$19",
+    name: "Normal",
+    price: "$9",
     period: "/month",
-    description: "For professionals who need accuracy",
+    description: "Great for regular users needing better accuracy",
     features: [
-      "Unlimited scans",
+      "100 scans/day",
       "All media types",
-      "Detailed reports + heatmaps",
-      "API access (5K calls/mo)",
-      "Priority support",
+      "Enhanced reports",
+      "API access (1K calls/mo)",
+      "Priority queue",
     ],
-    cta: "Start Pro Trial",
+    cta: "Upgrade to Normal",
     highlighted: true,
-  },
-  {
-    name: "Business",
-    price: "$99",
-    period: "/month",
-    description: "For teams and organizations",
-    features: [
-      "Everything in Pro",
-      "Unlimited API calls",
-      "Team dashboard",
-      "Custom integrations",
-      "Dedicated account manager",
-      "SLA guarantee",
-    ],
-    cta: "Contact Sales",
-    highlighted: false,
   },
 ];
 
@@ -64,7 +48,7 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: "easeOut" as const },
+    transition: { duration: 0.5, ease: "easeOut" },
   },
 } as const;
 
@@ -76,13 +60,13 @@ export default function Pricing() {
       <div className="section" style={{ textAlign: "center" }}>
         <span className="section-label">Pricing</span>
         <h2 className="section-title" style={{ margin: "0 auto 0.75rem" }}>
-          Plans That Scale With You
+          Simple Pricing for Everyone
         </h2>
         <p
           className="section-subtitle"
           style={{ margin: "0 auto 4rem", textAlign: "center" }}
         >
-          Start for free. Upgrade when you need more.
+          Start for free. Upgrade if you need more.
         </p>
 
         <motion.div
@@ -132,7 +116,7 @@ export default function Pricing() {
                     borderRadius: "9999px",
                   }}
                 >
-                  Most Popular
+                  Best Value
                 </div>
               )}
 
@@ -175,12 +159,7 @@ export default function Pricing() {
                 >
                   {plan.price}
                 </span>
-                <span
-                  style={{
-                    fontSize: "0.9rem",
-                    color: "#5c5f73",
-                  }}
-                >
+                <span style={{ fontSize: "0.9rem", color: "#5c5f73" }}>
                   {plan.period}
                 </span>
               </div>
@@ -224,7 +203,9 @@ export default function Pricing() {
               </ul>
 
               <Link
-                href="/dashboard"
+                href={
+                  plan.name === "Free" ? "/signup" : "/checkout?plan=normal"
+                }
                 className={plan.highlighted ? "btn-primary" : "btn-secondary"}
                 style={{
                   width: "100%",

@@ -16,7 +16,10 @@ export default function Hero() {
         overflow: "hidden",
       }}
     >
-      <div className="section" style={{ paddingTop: "8rem", paddingBottom: "4rem" }}>
+      <div
+        className="section"
+        style={{ paddingTop: "8rem", paddingBottom: "4rem" }}
+      >
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -87,9 +90,9 @@ export default function Hero() {
             marginBottom: "5rem",
           }}
         >
-          <Link href="/dashboard" id="hero-cta" className="btn-primary pulse-glow">
-            Start Detecting Free
-          </Link>
+          <a href="#pricing" className="btn-primary">
+            Start Detecting Free →
+          </a>
           <a href="#how-it-works" className="btn-secondary">
             See How It Works →
           </a>

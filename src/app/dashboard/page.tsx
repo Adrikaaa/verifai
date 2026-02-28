@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+
+import { useRouter } from "next/navigation";
 
 /* ═══════════ Vercel-style Colors ═══════════ */
 const V = {
@@ -269,7 +272,10 @@ export default function DashboardPage() {
           </h1>
         </div>
         <div style={{ display: "flex", gap: "8px" }}>
-          <button className="v-btn-secondary">
+          <Link
+            href="/dashboard/paste"
+            className="v-btn-secondary inline-flex items-center gap-2"
+          >
             <svg
               width="16"
               height="16"
@@ -284,8 +290,12 @@ export default function DashboardPage() {
               <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
             </svg>
             Paste Link
-          </button>
-          <button className="v-btn-primary">
+          </Link>
+
+          <Link
+            href="/dashboard/upload"
+            className="v-btn-primary inline-flex items-center gap-2"
+          >
             <svg
               width="16"
               height="16"
@@ -301,7 +311,7 @@ export default function DashboardPage() {
               <line x1="12" y1="3" x2="12" y2="15" />
             </svg>
             Upload Scan
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -683,7 +693,7 @@ export default function DashboardPage() {
                   cursor: "pointer",
                 }}
               >
-                Upgrade
+                Upgrade to Pro
               </button>
             </div>
             <div className="v-card" style={{ padding: "16px" }}>

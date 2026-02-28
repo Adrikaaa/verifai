@@ -10,7 +10,7 @@ const Antigravity = dynamic(() => import("@/components/Antigravity"), {
   ssr: false,
 });
 
-/* ── Vercel-style Nav Tabs ── */
+/* Navigation tabs */
 const navTabs = [
   { label: "Overview", href: "/dashboard" },
   { label: "My Scans", href: "/dashboard/scans" },
@@ -31,22 +31,18 @@ export default function DashboardLayout({
   return (
     <>
       <style>{`
-        /* ── Fixed background ── */
         body, html {
           background: #000;
         }
 
-        /* ── Reset for dashboard ── */
         .vercel-dash {
           min-height: 100vh;
           color: #f0f0f5;
-          font-family: var(--font-geist-sans, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-          -webkit-font-smoothing: antialiased;
+          font-family: var(--font-geist-sans, 'Inter', sans-serif);
           position: relative;
           z-index: 5;
         }
 
-        /* ── Top bar ── */
         .vercel-topbar {
           position: sticky;
           top: 0;
@@ -71,12 +67,6 @@ export default function DashboardLayout({
           align-items: center;
           gap: 12px;
           text-decoration: none;
-        }
-
-        .vercel-logo-area span {
-          font-size: 14px;
-          font-weight: 500;
-          color: #f0f0f5;
         }
 
         .vercel-topbar-right {
@@ -119,7 +109,6 @@ export default function DashboardLayout({
           cursor: pointer;
         }
 
-        /* ── Tab nav bar ── */
         .vercel-tabs-bar {
           background: #000;
           border-bottom: 1px solid #1a1a1a;
@@ -132,10 +121,7 @@ export default function DashboardLayout({
           margin: 0 auto;
           padding: 0 24px;
           display: flex;
-          align-items: stretch;
-          gap: 0;
           overflow-x: auto;
-          scrollbar-width: none;
         }
 
         .vercel-tabs-inner::-webkit-scrollbar {
@@ -145,14 +131,9 @@ export default function DashboardLayout({
         .vercel-tab {
           padding: 12px 16px;
           font-size: 14px;
-          font-weight: 400;
           color: #5c5f73;
-          text-decoration: none;
           white-space: nowrap;
-          position: relative;
-          transition: color 0.15s ease;
           border-bottom: 2px solid transparent;
-          margin-bottom: -1px;
         }
 
         .vercel-tab:hover {
@@ -165,51 +146,20 @@ export default function DashboardLayout({
           border-bottom-color: #f0f0f5;
         }
 
-        /* ── Hamburger menu for mobile ── */
-        .vercel-hamburger {
-          display: none;
-          background: none;
-          border: none;
-          color: #f0f0f5;
-          cursor: pointer;
-          padding: 4px;
+        @media (max-width: 768px) {
+          .vercel-topbar-inner { padding: 0 16px; }
+          .vercel-tabs-inner { padding: 0 16px; }
+          .vercel-content { padding: 24px 16px; }
         }
 
-        /* ── Main content ── */
         .vercel-content {
           max-width: 1200px;
           margin: 0 auto;
           padding: 32px 24px;
-          min-height: calc(100vh - 120px);
-          position: relative;
-          z-index: 10;
-        }
-
-        /* ── Mobile ── */
-        @media (max-width: 768px) {
-          .vercel-topbar-inner {
-            padding: 0 16px;
-          }
-
-          .vercel-tabs-inner {
-            padding: 0 16px;
-          }
-
-          .vercel-content {
-            padding: 24px 16px;
-          }
-
-          .vercel-hamburger {
-            display: flex;
-          }
-
-          .vercel-tabs-bar.desktop-only {
-            display: none;
-          }
         }
       `}</style>
 
-      {/* 🔹 Fixed Antigravity background - Outside main container */}
+      {/* Background */}
       <div
         style={{
           position: "fixed",
@@ -219,7 +169,6 @@ export default function DashboardLayout({
           height: "100vh",
           zIndex: 0,
           pointerEvents: "none",
-          opacity: 1,
         }}
       >
         <Antigravity
@@ -244,51 +193,27 @@ export default function DashboardLayout({
         />
       </div>
 
-      <div className="vercel-dash" style={{ position: "relative" }}>
-        {/* ── Content wrapper - No Antigravity here ── */}
-
-        {/* ── Top bar ── */}
+      <div className="vercel-dash">
+        {/* Top Bar */}
         <div className="vercel-topbar">
           <div className="vercel-topbar-inner">
-            {/* Left: Logo + Project name */}
+            {/* LEFT: LOGO + PROJECT NAME */}
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               <Link href="/" className="vercel-logo-area">
-                <div
+                <img
+                  src="/logo.png"
+                  alt="Verif.Ai Logo"
                   style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: "6px",
-                    background: "linear-gradient(135deg, #4169E1, #5227FF)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    height: "32px",
+                    width: "auto",
+                    objectFit: "contain",
                     flexShrink: 0,
                   }}
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#fff"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    <path d="M9 12l2 2 4-4" />
-                  </svg>
-                </div>
+                />
               </Link>
 
-              {/* Breadcrumb separator */}
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                style={{ color: "#333" }}
-              >
+              {/* Breadcrumb */}
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path
                   d="M5.5 2L10.5 8L5.5 14"
                   stroke="currentColor"
@@ -298,140 +223,73 @@ export default function DashboardLayout({
                 />
               </svg>
 
-              <span
-                style={{ fontSize: "14px", fontWeight: 500, color: "#f0f0f5" }}
-              >
-                Adrika&apos;s Projects
+              <span style={{ fontSize: "14px", fontWeight: 500 }}>
+                Adrika's Projects
               </span>
 
               <span
                 style={{
                   fontSize: "11px",
                   fontWeight: 500,
-                  color: "#8b8fa3",
                   padding: "2px 8px",
                   borderRadius: "9999px",
                   border: "1px solid #333",
                   textTransform: "uppercase",
-                  letterSpacing: "0.03em",
                 }}
               >
                 Pro
               </span>
             </div>
 
-            {/* Right: Search + Actions */}
+            {/* RIGHT SIDE */}
             <div className="vercel-topbar-right">
-              {/* Search shortcut */}
               <button
                 className="vercel-icon-btn"
-                style={{
-                  width: "auto",
-                  padding: "0 12px",
-                  gap: "6px",
-                  fontSize: "13px",
-                }}
+                style={{ width: "auto", padding: "0 12px" }}
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="8"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <line
+                    x1="21"
+                    y1="21"
+                    x2="16.65"
+                    y2="16.65"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
                 </svg>
-                <span className="hidden sm:inline" style={{ color: "#5c5f73" }}>
+                <span style={{ color: "#5c5f73", fontSize: "13px" }}>
                   Search...
                 </span>
-                <span
-                  className="hidden sm:inline"
-                  style={{
-                    fontSize: "11px",
-                    color: "#555",
-                    border: "1px solid #333",
-                    borderRadius: "4px",
-                    padding: "1px 5px",
-                    marginLeft: "4px",
-                  }}
-                >
-                  ⌘K
-                </span>
               </button>
 
-              {/* Notifications */}
-              <button
-                className="vercel-icon-btn"
-                style={{ position: "relative" }}
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                </svg>
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 6,
-                    right: 6,
-                    width: 7,
-                    height: 7,
-                    borderRadius: "50%",
-                    background: "#3291ff",
-                    border: "2px solid #000",
-                  }}
-                />
-              </button>
-
-              {/* Mobile hamburger */}
-              <button
-                className="vercel-hamburger"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                aria-label="Toggle menu"
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                >
-                  {mobileMenuOpen ? (
-                    <>
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
-                    </>
-                  ) : (
-                    <>
-                      <line x1="4" y1="7" x2="20" y2="7" />
-                      <line x1="4" y1="12" x2="20" y2="12" />
-                      <line x1="4" y1="17" x2="20" y2="17" />
-                    </>
-                  )}
+              <button className="vercel-icon-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  />
+                  <path
+                    d="M13.73 21a2 2 0 0 1-3.46 0"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  />
                 </svg>
               </button>
 
-              {/* Avatar */}
               <div className="vercel-avatar">A</div>
             </div>
           </div>
         </div>
 
-        {/* ── Tab navigation bar ── */}
+        {/* Tabs */}
         <div className="vercel-tabs-bar desktop-only">
           <div className="vercel-tabs-inner">
             {navTabs.map((tab) => {
@@ -439,6 +297,7 @@ export default function DashboardLayout({
                 tab.href === "/dashboard"
                   ? pathname === "/dashboard"
                   : pathname.startsWith(tab.href);
+
               return (
                 <Link
                   key={tab.href}
@@ -452,72 +311,7 @@ export default function DashboardLayout({
           </div>
         </div>
 
-        {/* ── Mobile tabs dropdown ── */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden"
-              style={{
-                background: "#0a0a0a",
-                borderBottom: "1px solid #1a1a1a",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  padding: "8px 16px",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                {navTabs.map((tab) => {
-                  const isActive =
-                    tab.href === "/dashboard"
-                      ? pathname === "/dashboard"
-                      : pathname.startsWith(tab.href);
-                  return (
-                    <Link
-                      key={tab.href}
-                      href={tab.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      style={{
-                        padding: "10px 8px",
-                        fontSize: "14px",
-                        fontWeight: isActive ? 500 : 400,
-                        color: isActive ? "#f0f0f5" : "#5c5f73",
-                        textDecoration: "none",
-                        borderRadius: "6px",
-                        transition: "color 0.15s ease",
-                      }}
-                    >
-                      {tab.label}
-                    </Link>
-                  );
-                })}
-                <Link
-                  href="/"
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    padding: "10px 8px",
-                    fontSize: "14px",
-                    color: "#5c5f73",
-                    textDecoration: "none",
-                    borderTop: "1px solid #1a1a1a",
-                    marginTop: "4px",
-                    paddingTop: "14px",
-                  }}
-                >
-                  ← Back to Home
-                </Link>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* ── Page content ── */}
+        {/* Page Content */}
         <div className="vercel-content">{children}</div>
       </div>
     </>

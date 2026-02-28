@@ -7,8 +7,8 @@ import Link from "next/link";
 const navLinks = [
   { label: "Product", href: "#features" },
   { label: "Features", href: "#how-it-works" },
-  { label: "Pricing", href: "#pricing" },
   { label: "Docs", href: "#use-cases" },
+  { label: "Pricing", href: "#pricing" },
 ];
 
 export default function Navbar() {
@@ -28,9 +28,7 @@ export default function Navbar() {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="fixed top-0 left-0 right-0 z-50"
       style={{
-        background: scrolled
-          ? "rgba(0, 0, 0, 0.92)"
-          : "transparent",
+        background: scrolled ? "rgba(0, 0, 0, 0.92)" : "transparent",
         backdropFilter: scrolled ? "blur(20px)" : "none",
         borderBottom: scrolled
           ? "1px solid rgba(255, 255, 255, 0.06)"
@@ -50,6 +48,7 @@ export default function Navbar() {
         }}
       >
         {/* Logo */}
+        {/* Logo */}
         <a
           href="#"
           id="navbar-logo"
@@ -60,43 +59,15 @@ export default function Navbar() {
             textDecoration: "none",
           }}
         >
-          <div
+          <img
+            src="/logo.png" // <-- change path if needed
+            alt="Verif.Ai"
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: "0.5rem",
-              background: "linear-gradient(135deg, #4169E1, #5227FF)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              height: "32px", // size of your PNG
+              objectFit: "contain",
             }}
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#fff"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <path d="M9 12l2 2 4-4" />
-            </svg>
-          </div>
-          <span
-            style={{
-              fontSize: "1.2rem",
-              fontWeight: 700,
-              color: "#f0f0f5",
-              letterSpacing: "-0.03em",
-            }}
-          >
-            Verif.Ai
-          </span>
+          />
         </a>
-
         {/* Desktop Links */}
         <div
           style={{
@@ -118,12 +89,8 @@ export default function Navbar() {
                 textDecoration: "none",
                 transition: "color 0.2s ease",
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.color = "#f0f0f5")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.color = "#8b8fa3")
-              }
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#f0f0f5")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#8b8fa3")}
             >
               {link.label}
             </a>
@@ -135,8 +102,8 @@ export default function Navbar() {
           className="hidden md:flex"
           style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}
         >
-          <a
-            href="#pricing"
+          <Link
+            href="/signup"
             id="nav-signin"
             style={{
               fontSize: "0.875rem",
@@ -146,17 +113,13 @@ export default function Navbar() {
               transition: "color 0.2s ease",
               padding: "0.5rem 0.75rem",
             }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.color = "#f0f0f5")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = "#8b8fa3")
-            }
+            onMouseEnter={(e: any) => (e.currentTarget.style.color = "#f0f0f5")}
+            onMouseLeave={(e: any) => (e.currentTarget.style.color = "#8b8fa3")}
           >
             Sign in
-          </a>
+          </Link>
           <Link
-            href="/dashboard"
+            href="/#pricing"
             id="nav-get-started"
             style={{
               padding: "0.55rem 1.25rem",
@@ -169,13 +132,15 @@ export default function Navbar() {
               transition: "all 0.2s ease",
               boxShadow: "0 2px 12px rgba(54, 83, 225, 0.3)",
             }}
-            onMouseEnter={(e) => {
+            onMouseEnter={(e: any) => {
               e.currentTarget.style.background = "#2A45C9";
-              e.currentTarget.style.boxShadow = "0 4px 20px rgba(54, 83, 225, 0.4)";
+              e.currentTarget.style.boxShadow =
+                "0 4px 20px rgba(54, 83, 225, 0.4)";
             }}
-            onMouseLeave={(e) => {
+            onMouseLeave={(e: any) => {
               e.currentTarget.style.background = "#3653E1";
-              e.currentTarget.style.boxShadow = "0 2px 12px rgba(54, 83, 225, 0.3)";
+              e.currentTarget.style.boxShadow =
+                "0 2px 12px rgba(54, 83, 225, 0.3)";
             }}
           >
             Get Started
@@ -256,7 +221,7 @@ export default function Navbar() {
               </a>
             ))}
             <Link
-              href="/dashboard"
+              href="/#pricing"
               onClick={() => setMobileOpen(false)}
               style={{
                 textAlign: "center",

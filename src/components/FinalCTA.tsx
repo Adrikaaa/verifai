@@ -99,7 +99,7 @@ export default function FinalCTA() {
             marginBottom: "3.5rem",
           }}
         >
-          <Link href="/dashboard" className="btn-primary pulse-glow">
+          <Link href="/signup" className="btn-primary pulse-glow">
             Get Started Free
           </Link>
           <a href="#features" className="btn-secondary">
