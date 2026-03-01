@@ -1,12 +1,20 @@
-// VerifAI Extension — Popup Logic (No Auth)
+// VerifAI Extension — Popup Logic
 // ═══════════════════════════════════════════════════
 
 let API_BASE = "";
+
+// The URL of the deployed VerifAI web app (change for production)
+const WEBAPP_URL = "http://localhost:3000";
 
 // ── DOM Elements ─────────────────────────────────
 const serverSection = document.getElementById("serverSection");
 const mainSection = document.getElementById("mainSection");
 const connectionDot = document.getElementById("connectionDot");
+
+// Auth bar
+const authBar = document.getElementById("authBar");
+const authStatus = document.getElementById("authStatus");
+const authAction = document.getElementById("authAction");
 
 const serverUrlInput = document.getElementById("serverUrlInput");
 const connectBtn = document.getElementById("connectBtn");
@@ -44,10 +52,41 @@ const clipNewsList = document.getElementById("clipNewsList");
 
 
 // ═══════════════════════════════════════════════════
+// AUTH0 — Check login state via VerifAI web app
+// ═══════════════════════════════════════════════════
+
+async function initAuth() {
+  try {
+    const res = await fetch(`${WEBAPP_URL}/api/me`, { credentials: "include" });
+    if (!res.ok) throw new Error("no session");
+    const data = await res.json();
+    if (data.user) {
+      const name = data.user.name || data.user.email || "Signed in";
+      authStatus.textContent = `👤 ${name}`;
+      authStatus.className = "auth-status-text logged-in";
+      authAction.textContent = "Sign Out";
+      authAction.href = `${WEBAPP_URL}/auth/logout`;
+      authAction.className = "auth-action-link logout-link";
+    } else {
+      throw new Error("no user");
+    }
+  } catch {
+    authStatus.textContent = "Not signed in";
+    authStatus.className = "auth-status-text";
+    authAction.textContent = "Sign In";
+    authAction.href = `${WEBAPP_URL}/auth/login`;
+    authAction.className = "auth-action-link";
+  }
+}
+
+// ═══════════════════════════════════════════════════
 // INITIALIZE
 // ═══════════════════════════════════════════════════
 
 document.addEventListener("DOMContentLoaded", async () => {
+    // Check Auth0 login status
+    initAuth();
+
     const data = await chrome.storage.local.get(["verifai_server_url", "verifai_api_base"]);
 
     if (data.verifai_server_url && data.verifai_api_base) {

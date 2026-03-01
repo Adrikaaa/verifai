@@ -102,8 +102,8 @@ export default function Navbar() {
           className="hidden md:flex"
           style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}
         >
-          <Link
-            href="/signup"
+          <a
+            href="/auth/login"
             id="nav-signin"
             style={{
               fontSize: "0.875rem",
@@ -117,9 +117,9 @@ export default function Navbar() {
             onMouseLeave={(e: any) => (e.currentTarget.style.color = "#8b8fa3")}
           >
             Sign in
-          </Link>
-          <Link
-            href="/#pricing"
+          </a>
+          <a
+            href="/auth/login?screen_hint=signup"
             id="nav-get-started"
             style={{
               padding: "0.55rem 1.25rem",
@@ -144,7 +144,7 @@ export default function Navbar() {
             }}
           >
             Get Started
-          </Link>
+          </a>
         </div>
 
         {/* Mobile Hamburger */}

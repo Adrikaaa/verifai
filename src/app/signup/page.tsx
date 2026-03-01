@@ -2,22 +2,12 @@
 import React from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
-import axios from "axios";
 
 const Antigravity = dynamic(() => import("@/components/Antigravity"), {
   ssr: false,
 });
 
 export default function Signup() {
-  const [user, setUser] = React.useState({
-    email: "",
-    password: "",
-    username: "",
-  });
-
-  const onSignup = async () => {};
-
   return (
     <div className="relative w-full min-h-screen overflow-hidden">
       {/* Black Background */}
@@ -66,59 +56,34 @@ export default function Signup() {
             Join Verif.AI and get started
           </p>
 
-          {/* Username */}
-          <div className="mb-5">
-            <label className="block text-gray-300 text-sm mb-2">Username</label>
-            <input
-              type="text"
-              value={user.username}
-              onChange={(e) => setUser({ ...user, username: e.target.value })}
-              placeholder="yourusername"
-              className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
-            />
-          </div>
-
-          {/* Email */}
-          <div className="mb-5">
-            <label className="block text-gray-300 text-sm mb-2">Email</label>
-            <input
-              type="email"
-              value={user.email}
-              onChange={(e) => setUser({ ...user, email: e.target.value })}
-              placeholder="you@example.com"
-              className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
-            />
-          </div>
-
-          {/* Password */}
-          <div className="mb-6">
-            <label className="block text-gray-300 text-sm mb-2">Password</label>
-            <input
-              type="password"
-              value={user.password}
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
-              placeholder="••••••••"
-              className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
-            />
-          </div>
-
-          {/* Royal Blue Button */}
-          <button
-            onClick={onSignup}
-            className="w-full py-3 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-medium transition-all duration-200 shadow-lg shadow-blue-900/40"
+          {/* Auth0 Signup */}
+          <a
+            href="/auth/login?screen_hint=signup"
+            className="w-full py-3 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-medium transition-all duration-200 shadow-lg shadow-blue-900/40 mb-4"
+            style={{ textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}
           >
-            Create Account
-          </button>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <line x1="19" y1="8" x2="19" y2="14" />
+              <line x1="22" y1="11" x2="16" y2="11" />
+            </svg>
+            Create Account with Auth0
+          </a>
 
-          {/* Footer */}
+          <p className="text-center text-gray-500 text-xs mb-6">
+            Secure authentication powered by Auth0
+          </p>
+
           <p className="text-center text-gray-400 text-sm mt-6">
             Already have an account?{" "}
-            <Link
-              href="/login"
+            <a
+              href="/auth/login"
               className="text-purple-500 hover:text-purple-400 transition"
+              style={{ textDecoration: "none" }}
             >
               Login here
-            </Link>
+            </a>
           </p>
         </div>
       </div>

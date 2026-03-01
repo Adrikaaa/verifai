@@ -1,28 +1,19 @@
-"use client";
+﻿"use client";
 import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import axios from "axios";
 import dynamic from "next/dynamic";
 
 const Antigravity = dynamic(() => import("@/components/Antigravity"), {
   ssr: false,
 });
 
-export default function Signup() {
-  const [user, setUser] = React.useState({
-    email: "",
-    password: "",
-  });
-
-  const onLogin = async () => {};
-
+export default function Login() {
   return (
     <div className="relative w-full min-h-screen overflow-hidden">
-      {/* 🔵 Black background */}
+      {/* Black background */}
       <div className="absolute inset-0 z-0" style={{ background: "#000" }} />
 
-      {/* 🔹 Antigravity Layers (UNCHANGED) */}
+      {/* Antigravity Layers */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-60">
         <div className="absolute inset-0 opacity-90"></div>
 
@@ -61,7 +52,7 @@ export default function Signup() {
         </a>
       </div>
 
-      {/* ✨ LOGIN CARD */}
+      {/* LOGIN CARD */}
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
         <div className="w-full max-w-md backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl p-8">
           <h1 className="text-3xl font-semibold text-white text-center mb-2">
@@ -71,54 +62,44 @@ export default function Signup() {
             Login to continue to your account
           </p>
 
-          {/* Email */}
-          <div className="mb-5">
-            <label className="block text-gray-300 text-sm mb-2">Email</label>
-            <input
-              type="email"
-              value={user.email}
-              onChange={(e) => setUser({ ...user, email: e.target.value })}
-              placeholder="you@example.com"
-              className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
-            />
-          </div>
-
-          {/* Password */}
-          <div className="mb-6">
-            <label className="block text-gray-300 text-sm mb-2">Password</label>
-            <input
-              type="password"
-              value={user.password}
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
-              placeholder="••••••••"
-              className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
-            />
-          </div>
-
-          {/* Button */}
-          <button
-            onClick={onLogin}
-            className="w-full py-3 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-medium transition-all duration-200 shadow-lg shadow-blue-900/40"
+          {/* Auth0 Login */}
+          <a
+            href="/auth/login"
+            style={{
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+              width: "100%",
+              padding: "12px",
+              borderRadius: "12px",
+              background: "#1d4ed8",
+              color: "#fff",
+              fontWeight: 500,
+              marginBottom: "16px",
+              transition: "background 0.2s",
+            }}
           >
-            Sign In
-          </button>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            Continue with Auth0
+          </a>
 
-          {/* Divider */}
-          <div className="my-6 flex items-center">
-            <div className="flex-1 h-px bg-white/10"></div>
-            <span className="px-3 text-gray-400 text-sm">or</span>
-            <div className="flex-1 h-px bg-white/10"></div>
-          </div>
+          <p className="text-center text-gray-500 text-xs mb-6">
+            Secure authentication powered by Auth0
+          </p>
 
-          {/* Signup Link */}
           <p className="text-center text-gray-400 text-sm">
-            Don’t have an account?{" "}
-            <Link
-              href="/signup"
-              className="text-purple-500 hover:text-purple-400 transition"
+            {"Don't have an account? "}
+            <a
+              href="/auth/login?screen_hint=signup"
+              style={{ color: "#a855f7", textDecoration: "none" }}
             >
               Create one
-            </Link>
+            </a>
           </p>
         </div>
       </div>
