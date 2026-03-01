@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
-import { useUser } from "@auth0/nextjs-auth0/client";
 
 const Antigravity = dynamic(() => import("@/components/Antigravity"), {
   ssr: false,
@@ -28,8 +27,6 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, isLoading } = useUser();
-  const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
     <>
@@ -287,64 +284,7 @@ export default function DashboardLayout({
                 </svg>
               </button>
 
-              <div style={{ position: "relative" }}>
-                <div
-                  className="vercel-avatar"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  title={user?.email || "Account"}
-                >
-                  {isLoading ? "…" : (user?.name?.[0] || user?.email?.[0] || "U").toUpperCase()}
-                </div>
-                {showUserMenu && (
-                  <div style={{
-                    position: "absolute",
-                    right: 0,
-                    top: "44px",
-                    background: "#111",
-                    border: "1px solid #2a2a2a",
-                    borderRadius: "10px",
-                    padding: "8px",
-                    minWidth: "200px",
-                    zIndex: 999,
-                    boxShadow: "0 8px 32px rgba(0,0,0,0.6)",
-                  }}>
-                    {user && (
-                      <div style={{ padding: "8px 12px", borderBottom: "1px solid #222", marginBottom: "6px" }}>
-                        <div style={{ fontSize: "13px", fontWeight: 600, color: "#f0f0f5", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                          {user.name || user.nickname || "User"}
-                        </div>
-                        <div style={{ fontSize: "11px", color: "#5c5f73", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                          {user.email}
-                        </div>
-                      </div>
-                    )}
-                    <a
-                      href="/auth/logout"
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        padding: "8px 12px",
-                        fontSize: "13px",
-                        color: "#ef4444",
-                        textDecoration: "none",
-                        borderRadius: "6px",
-                        transition: "background 0.15s",
-                      }}
-                      onMouseEnter={e => (e.currentTarget.style.background = "rgba(239,68,68,0.1)")}
-                      onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                        <polyline points="16 17 21 12 16 7" />
-                        <line x1="21" y1="12" x2="9" y2="12" />
-                      </svg>
-                      Sign Out
-                    </a>
-                  </div>
-                )}
-              </div>
+              <div className="vercel-avatar">A</div>
             </div>
           </div>
         </div>
