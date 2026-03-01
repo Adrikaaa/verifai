@@ -14,78 +14,77 @@
         <span class="logo-icon">🛡️</span>
         <span class="logo-text">VerifAI</span>
       </div>
-      <button id="logoutBtn" class="btn-ghost" style="display:none;">Logout</button>
+      <span id="connectionDot" class="connection-dot disconnected" title="Not connected"></span>
     </header>
 
-    <!-- AUTH SECTION (shown when not logged in) -->
-    <div id="authSection">
-      <div class="auth-card">
-        <h2 class="auth-title">Welcome to VerifAI</h2>
-        <p class="auth-subtitle">Real-time AI detection in your browser</p>
+    <!-- SERVER CONNECT (shown when not connected) -->
+    <div id="serverSection">
+      <div class="server-card">
+        <h2 class="server-title">Connect to Server</h2>
+        <p class="server-subtitle">Enter your Kaggle ngrok URL to start scanning</p>
 
-        <div class="tabs">
-          <button class="tab active" data-tab="login">Login</button>
-          <button class="tab" data-tab="register">Register</button>
+        <div class="input-group">
+          <label>🌐 Server URL</label>
+          <div class="scan-input-group">
+            <input type="text" id="serverUrlInput" placeholder="https://xxxx.ngrok-free.app" />
+            <button id="connectBtn" class="btn-primary btn-sm">Connect</button>
+          </div>
+          <p id="serverStatus" class="server-status"></p>
         </div>
 
-        <form id="authForm">
-          <div class="input-group">
-            <label>Email</label>
-            <input type="email" id="emailInput" placeholder="you@email.com" required />
-          </div>
-          <div class="input-group">
-            <label>Password</label>
-            <input type="password" id="passwordInput" placeholder="••••••" required />
-          </div>
-          <button type="submit" id="authSubmitBtn" class="btn-primary">Get Started</button>
-          <p id="authError" class="error-text"></p>
-        </form>
-
-        <p class="free-badge">🎁 5 free scans included!</p>
+        <div class="server-help">
+          <p class="hint">📋 How to get the URL:</p>
+          <ol class="help-steps">
+            <li>Open the VerifAI notebook on Kaggle</li>
+            <li>Run Cell 2 (Deps) to install packages</li>
+            <li>Run the last cell (ngrok Server)</li>
+            <li>Copy the <strong>Public URL</strong> printed</li>
+            <li>Paste above and click Connect</li>
+          </ol>
+        </div>
       </div>
     </div>
 
-    <!-- MAIN SECTION (shown when logged in) -->
+    <!-- MAIN SECTION (shown after connected) -->
     <div id="mainSection" style="display:none;">
 
-      <!-- Scan Counter -->
-      <div class="scan-counter">
-        <div class="counter-ring">
-          <svg viewBox="0 0 100 100">
-            <circle class="ring-bg" cx="50" cy="50" r="42" />
-            <circle id="ringProgress" class="ring-fill" cx="50" cy="50" r="42" />
-          </svg>
-          <div class="counter-text">
-            <span id="scansRemaining" class="counter-number">5</span>
-            <span class="counter-label">left</span>
-          </div>
-        </div>
-        <div class="counter-info">
-          <p class="counter-title">Free Scans</p>
-          <p id="scanUsageText" class="counter-desc">0 / 5 used</p>
-        </div>
+      <!-- Connected info bar -->
+      <div class="server-info-bar">
+        <span class="server-info-dot"></span>
+        <span id="connectedUrl" class="server-info-url">Connected</span>
+        <button id="disconnectBtn" class="btn-ghost btn-xs">Change</button>
       </div>
 
       <!-- Quick Scan -->
       <div class="scan-section">
-        <h3>Quick Scan</h3>
+        <h3>🔍 Scan Content</h3>
         <div class="scan-input-group">
-          <input type="text" id="urlInput" placeholder="Paste link here..." />
+          <input type="text" id="urlInput" placeholder="Paste reel / video link here..." />
           <button id="scanBtn" class="btn-primary btn-scan">Scan</button>
         </div>
         <p class="hint">💡 Right-click any link → "Scan with VerifAI"</p>
       </div>
 
+      <!-- Error display -->
+      <div id="scanError" class="scan-error" style="display:none;">
+        <span class="error-icon">⚠️</span>
+        <p id="scanErrorText" class="error-msg"></p>
+        <button id="dismissError" class="btn-ghost btn-xs">✕</button>
+      </div>
+
       <!-- Loading -->
       <div id="scanLoading" class="loading-section" style="display:none;">
         <div class="spinner"></div>
-        <p>Analyzing content through 6 stages...</p>
+        <p>Analyzing via Kaggle pipeline...</p>
+        <p class="loading-hint">This may take 1-2 minutes</p>
         <div class="pipeline-steps">
-          <span class="step active">Metadata</span>
-          <span class="step">Semantic</span>
-          <span class="step">Visual</span>
+          <span class="step active">Download</span>
+          <span class="step">Frames</span>
+          <span class="step">Persons</span>
+          <span class="step">Face AI</span>
+          <span class="step">FFT/ELA</span>
           <span class="step">Audio</span>
-          <span class="step">FFT</span>
+          <span class="step">Fact Check</span>
           <span class="step">Verdict</span>
         </div>
       </div>
@@ -97,52 +96,110 @@
             <span id="resultEmoji" class="result-emoji">✅</span>
             <div>
               <h3 id="resultVerdict" class="result-verdict">AUTHENTIC</h3>
-              <p id="resultScore" class="result-score">Suspicion: 12%</p>
+              <p id="resultScore" class="result-score">AI Score: 0%</p>
             </div>
           </div>
+          <p id="resultReason" class="result-reason"></p>
 
           <div class="result-stages">
             <div class="stage-row">
-              <span class="stage-name">📋 Metadata</span>
-              <div class="stage-bar"><div id="metadataBar" class="stage-fill"></div></div>
-              <span id="metadataScore" class="stage-val">0%</span>
+              <span class="stage-name">🤖 Face Deepfake</span>
+              <div class="stage-bar"><div id="faceBar" class="stage-fill"></div></div>
+              <span id="faceScore" class="stage-val">0%</span>
             </div>
             <div class="stage-row">
-              <span class="stage-name">🧠 Semantic</span>
-              <div class="stage-bar"><div id="semanticBar" class="stage-fill"></div></div>
-              <span id="semanticScore" class="stage-val">0%</span>
+              <span class="stage-name">🖼️ AI Image</span>
+              <div class="stage-bar"><div id="aiImageBar" class="stage-fill"></div></div>
+              <span id="aiImageScore" class="stage-val">0%</span>
             </div>
             <div class="stage-row">
-              <span class="stage-name">👁️ Visual</span>
-              <div class="stage-bar"><div id="visualBar" class="stage-fill"></div></div>
-              <span id="visualScore" class="stage-val">0%</span>
+              <span class="stage-name">📊 FFT Artifacts</span>
+              <div class="stage-bar"><div id="fftBar" class="stage-fill"></div></div>
+              <span id="fftScore" class="stage-val">0%</span>
+            </div>
+            <div class="stage-row">
+              <span class="stage-name">🔬 ELA Forgery</span>
+              <div class="stage-bar"><div id="elaBar" class="stage-fill"></div></div>
+              <span id="elaScore" class="stage-val">0%</span>
             </div>
             <div class="stage-row">
               <span class="stage-name">🎤 Audio</span>
               <div class="stage-bar"><div id="audioBar" class="stage-fill"></div></div>
               <span id="audioScore" class="stage-val">0%</span>
             </div>
-            <div class="stage-row">
-              <span class="stage-name">📊 FFT</span>
-              <div class="stage-bar"><div id="fftBar" class="stage-fill"></div></div>
-              <span id="fftScore" class="stage-val">0%</span>
+          </div>
+
+          <!-- Personalities section -->
+          <div id="personalitiesSection" class="personalities-section" style="display:none;">
+            <h4 class="personalities-title">👤 Recognised Personalities</h4>
+            <div id="personalitiesList" class="personalities-list"></div>
+          </div>
+
+          <!-- Clip Identity section -->
+          <div id="clipIdentitySection" class="clip-identity-section" style="display:none;">
+            <h4 class="clip-identity-title">🎬 Clip Identity</h4>
+            <div id="clipIdentityCard" class="clip-identity-card">
+              <div class="clip-meta-row">
+                <span id="clipKnownBadge" class="clip-badge"></span>
+                <span id="clipPlatform" class="clip-platform"></span>
+              </div>
+              <p id="clipTitle" class="clip-title"></p>
+              <div class="clip-meta-row clip-stats">
+                <span id="clipUploader" class="clip-uploader"></span>
+                <span id="clipDate" class="clip-date"></span>
+                <span id="clipViews" class="clip-views"></span>
+              </div>
+            </div>
+            <div id="clipNewsList" class="fact-check-list"></div>
+          </div>
+
+          <!-- Fact-check section -->
+          <div id="factCheckSection" class="fact-check-section" style="display:none;">
+            <h4 class="fact-check-title">🔍 Related News (Fact Check)</h4>
+            <div id="factCheckList" class="fact-check-list"></div>
+          </div>
+
+          <!-- Speech Analysis section -->
+          <div id="speechSection" class="speech-section" style="display:none;">
+            <h4 class="section-title">🎙️ Speech Analysis</h4>
+            <div id="speechTranscript" class="speech-transcript"></div>
+            <div id="speechClaims" class="speech-claims"></div>
+          </div>
+
+          <!-- Scene Search section -->
+          <div id="sceneSection" class="scene-section" style="display:none;">
+            <h4 class="section-title">🔎 Reverse Scene Search</h4>
+            <div id="sceneList" class="scene-list"></div>
+          </div>
+
+          <!-- Feedback section -->
+          <div id="feedbackSection" class="feedback-section" style="display:none;">
+            <h4 class="feedback-title">💬 Feedback</h4>
+            <div id="feedbackSent" class="feedback-sent" style="display:none;">
+              <span class="feedback-sent-icon">✅</span>
+              <p class="feedback-sent-text">Thanks for your feedback!</p>
+            </div>
+            <div id="feedbackForm">
+              <p class="feedback-prompt">Do you agree with this analysis?</p>
+              <div class="feedback-buttons">
+                <button id="feedbackAgree" class="feedback-btn">👍 Agree</button>
+                <button id="feedbackDisagree" class="feedback-btn">👎 Disagree</button>
+              </div>
+              <div id="feedbackTextWrap" class="feedback-text-wrap" style="display:none;">
+                <textarea id="feedbackTextarea" class="feedback-textarea" placeholder="Tell us more (optional)..." rows="3"></textarea>
+                <button id="feedbackSubmit" class="btn-primary btn-sm feedback-submit">Submit Feedback</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Recent Scans -->
+      <!-- Recent Scans (local) -->
       <div class="history-section">
         <h3>Recent Scans</h3>
         <div id="historyList" class="history-list">
           <p class="empty-state">No scans yet. Start scanning!</p>
         </div>
-      </div>
-
-      <!-- Upgrade CTA -->
-      <div id="upgradeCta" class="upgrade-cta" style="display:none;">
-        <p>🔒 You've used all free scans</p>
-        <a href="http://localhost:3000" target="_blank" class="btn-upgrade">Upgrade to Pro →</a>
       </div>
     </div>
   </div>

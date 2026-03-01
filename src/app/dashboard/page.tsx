@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-
-import { useRouter } from "next/navigation";
+import ScanResultPanel, { type ScanResult } from "@/components/ScanResultPanel";
 
 /* ═══════════ Vercel-style Colors ═══════════ */
 const V = {
@@ -25,102 +24,77 @@ const V = {
   mono: "var(--font-geist-mono, 'JetBrains Mono', 'Menlo', monospace)",
 };
 
-/* ═══════════ DUMMY DATA ═══════════ */
-const stats = [
-  { label: "Total Scans", value: "128", change: "+12%", positive: true },
-  { label: "AI Detected", value: "63", change: "+8%", positive: false },
-  { label: "Authentic", value: "45", change: "+22%", positive: true },
-  { label: "Links Analyzed", value: "20", change: "+5%", positive: true },
-];
-
-const usageItems = [
-  { label: "Scans Used", current: 63, max: 100, unit: "" },
-  { label: "API Calls", current: 492, max: 5000, unit: "" },
-  { label: "Storage", current: 1.2, max: 5, unit: "GB" },
-];
-
+/* ═══════════ TYPES ═══════════ */
 interface ScanItem {
   id: string;
   name: string;
-  type: "Image" | "Video" | "Audio" | "Text";
+  type: "Video";
   source: string;
   result: "AI Generated" | "Authentic" | "Inconclusive";
   confidence: number;
   date: string;
   thumbnail: string;
-  repo?: string;
+  rawResult?: ScanResult;
 }
 
-const recentScans: ScanItem[] = [
-  {
-    id: "scan-001",
-    name: "photo_portrait.png",
-    type: "Image",
-    source: "Upload",
-    result: "AI Generated",
-    confidence: 94,
-    date: "12 min ago",
-    thumbnail: "🖼️",
-    repo: "media-uploads",
-  },
-  {
-    id: "scan-002",
-    name: "interview_clip.mp4",
-    type: "Video",
-    source: "URL",
-    result: "Authentic",
-    confidence: 88,
-    date: "1 hr ago",
-    thumbnail: "🎬",
-    repo: "video-analysis",
-  },
-  {
-    id: "scan-003",
-    name: "news_article.txt",
-    type: "Text",
-    source: "Paste",
-    result: "AI Generated",
-    confidence: 81,
-    date: "2 hrs ago",
-    thumbnail: "📄",
-    repo: "text-scans",
-  },
-  {
-    id: "scan-004",
-    name: "podcast_excerpt.mp3",
-    type: "Audio",
-    source: "Upload",
-    result: "Inconclusive",
-    confidence: 52,
-    date: "3 hrs ago",
-    thumbnail: "🎵",
-    repo: "audio-forensics",
-  },
-  {
-    id: "scan-005",
-    name: "twitter_thread.txt",
-    type: "Text",
-    source: "URL",
-    result: "AI Generated",
-    confidence: 76,
-    date: "5 hrs ago",
-    thumbnail: "📝",
-    repo: "social-monitor",
-  },
-  {
-    id: "scan-006",
-    name: "landscape_photo.jpg",
-    type: "Image",
-    source: "Upload",
-    result: "Authentic",
-    confidence: 97,
-    date: "1 day ago",
-    thumbnail: "🏞️",
-    repo: "media-uploads",
-  },
-];
-
 /* ═══════════ HELPERS ═══════════ */
+function relativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1)   return "Just now";
+  if (m < 60)  return `${m} min ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24)  return `${h} hr ago`;
+  const d = Math.floor(h / 24);
+  return `${d} day${d > 1 ? "s" : ""} ago`;
+}
+
+function platformEmoji(platform: string): string {
+  switch (platform) {
+    case "youtube":   return "🎬";
+    case "instagram": return "📸";
+    case "tiktok":    return "🎵";
+    case "twitter":   return "🐦";
+    case "upload":    return "📤";
+    default:          return "🔗";
+  }
+}
+
+function platformLabel(platform: string, videoUrl: string): string {
+  if (platform === "upload") return "Upload";
+  if (videoUrl.includes("youtube") || videoUrl.includes("youtu.be")) return "YouTube";
+  if (videoUrl.includes("instagram")) return "Instagram";
+  if (videoUrl.includes("tiktok"))    return "TikTok";
+  if (videoUrl.includes("twitter") || videoUrl.includes("x.com")) return "Twitter/X";
+  return "URL";
+}
+
+function mapVerdict(verdict?: string): "AI Generated" | "Authentic" | "Inconclusive" {
+  if (verdict === "AI")     return "AI Generated";
+  if (verdict === "NOT AI") return "Authentic";
+  return "Inconclusive";
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function docToScanItem(doc: any): ScanItem {
+  const url: string = doc.videoUrl || "";
+  const name = url.startsWith("(uploaded:")
+    ? url.replace("(uploaded:", "").replace(")", "").trim()
+    : url.replace(/^https?:\/\/(www\.)?/, "").slice(0, 48) || "(unknown)";
+  return {
+    id:         doc._id?.toString() || doc.id,
+    name,
+    type:       "Video",
+    source:     platformLabel(doc.platform, url),
+    result:     mapVerdict(doc.result?.verdict),
+    confidence: Math.round((doc.result?.overallScore ?? 0) * 100),
+    date:       relativeTime(doc.createdAt),
+    thumbnail:  platformEmoji(doc.platform),
+    rawResult:  doc.result ?? undefined,
+  };
+}
+
+/* ═══════════ RESULT COLORS ═══════════ */
 function getResultColor(result: string) {
   switch (result) {
     case "AI Generated":
@@ -150,9 +124,42 @@ function getResultDot(result: string) {
 /* ═══════════ MAIN PAGE ═══════════ */
 export default function DashboardPage() {
   const [selectedScan, setSelectedScan] = useState<ScanItem | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery]   = useState("");
+  const [scans, setScans]               = useState<ScanItem[]>([]);
+  const [loading, setLoading]           = useState(true);
+  const [scanCount, setScanCount]       = useState(0);
+  const [maxScans, setMaxScans]         = useState(100);
 
-  const filteredScans = recentScans.filter((s) =>
+  useEffect(() => {
+    fetch("/api/scans")
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.scans)) {
+          setScans(data.scans.map(docToScanItem));
+          setScanCount(data.scans.length);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Derived stats
+  const aiCount   = scans.filter(s => s.result === "AI Generated").length;
+  const authCount = scans.filter(s => s.result === "Authentic").length;
+  const susCount  = scans.filter(s => s.result === "Inconclusive").length;
+
+  const stats = [
+    { label: "Total Scans",   value: String(scans.length), change: "", positive: true },
+    { label: "AI Detected",   value: String(aiCount),       change: "", positive: false },
+    { label: "Authentic",     value: String(authCount),     change: "", positive: true },
+    { label: "Suspicious",    value: String(susCount),      change: "", positive: false },
+  ];
+
+  const usageItems = [
+    { label: "Scans Used", current: scanCount, max: maxScans, unit: "" },
+  ];
+
+  const filteredScans = scans.filter((s) =>
     s.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
@@ -377,7 +384,7 @@ export default function DashboardPage() {
             >
               Recent Scans
             </h2>
-            <div style={{ display: "flex", gap: "4px" }}>
+          <div style={{ display: "flex", gap: "4px" }}>
               {/* Grid / List toggle - visual only */}
               <button
                 className="vercel-icon-btn"
@@ -447,6 +454,15 @@ export default function DashboardPage() {
               gap: "16px",
             }}
           >
+            {loading && (
+              <p style={{ fontSize: 13, color: V.textMuted, gridColumn: "1 / -1", margin: 0 }}>Loading scans…</p>
+            )}
+            {!loading && filteredScans.length === 0 && (
+              <div className="v-card" style={{ padding: "32px", textAlign: "center", gridColumn: "1 / -1" }}>
+                <p style={{ fontSize: 14, color: V.textSecondary, margin: 0 }}>No scans yet.</p>
+                <p style={{ fontSize: 13, color: V.textMuted, margin: "6px 0 0" }}>Use the extension, paste a link, or upload a video to get started.</p>
+              </div>
+            )}
             {filteredScans.map((scan, i) => (
               <motion.div
                 key={scan.id}
@@ -918,9 +934,12 @@ export default function DashboardPage() {
               </div>
 
               {/* Modal Content */}
+              <div style={{ padding: "24px" }}>
+              {selectedScan?.rawResult ? (
+                <ScanResultPanel result={selectedScan.rawResult} />
+              ) : (
               <div
                 style={{
-                  padding: "24px",
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
                   gap: "24px",
@@ -1217,6 +1236,8 @@ export default function DashboardPage() {
                 </div>
               </div>
 
+              )}
+              </div>
               {/* Modal Footer */}
               <div
                 style={{
@@ -1227,8 +1248,7 @@ export default function DashboardPage() {
                   gap: "8px",
                 }}
               >
-                <button className="v-btn-secondary">Download Report</button>
-                <button className="v-btn-primary">Re-scan</button>
+                <button className="v-btn-secondary" onClick={() => setSelectedScan(null)}>Close</button>
               </div>
             </motion.div>
           </motion.div>

@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getScan } from "@/lib/scanStore";
+import { connectToDatabase } from "@/dbconfig/dbconfig";
+import Scan from "@/models/ScanModel";
 
 export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+    req: NextRequest,
+    { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params;
-  const scan = getScan(id);
+    await connectToDatabase();
+    const { id } = await params;
 
-  if (!scan) {
-    return NextResponse.json({ error: "Scan not found" }, { status: 404 });
-  }
-
-  return NextResponse.json(scan);
+    try {
+        const scan = await Scan.findById(id).lean();
+        if (!scan) return NextResponse.json({ error: "Scan not found" }, { status: 404 });
+        return NextResponse.json(scan);
+    } catch {
+        return NextResponse.json({ error: "Invalid scan ID" }, { status: 400 });
+    }
 }

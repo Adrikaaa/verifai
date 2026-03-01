@@ -1,26 +1,110 @@
 /**
- * VerifAI Pipeline Simulation
- * ----------------------------
- * Mirrors the Kaggle notebook's 6-stage content authenticity pipeline.
- * Each stage produces a score (0-1) where higher = more suspicious.
- *
- * When you deploy the real Kaggle notebook as an API,
- * replace the body of `runPipeline()` with a fetch call to that API.
+ * VerifAI Pipeline — real Flask backend
+ * --------------------------------------
+ * Calls the Kaggle-hosted Flask API (exposed via ngrok static domain).
+ * Set PIPELINE_URL in .env.local to your ngrok domain.
  */
 
+// ── Full result shape returned by the Flask API ──────────────────────
 export interface PipelineResult {
-    verdict: "AUTHENTIC" | "MANIPULATED" | "INCONCLUSIVE";
+    verdict:      "AI" | "SUSPICIOUS" | "NOT AI";
+    confidence:   "HIGH" | "MEDIUM" | "LOW";
     overallScore: number;
-    stages: {
-        metadata: { score: number; findings: string[] };
-        semantic: { score: number; description: string };
-        visual: { score: number; label: string };
-        audio: { score: number; label: string };
-        fft: { score: number; label: string };
+    reason:       string;
+    scores: {
+        face_deepfake:  number;
+        full_deepfake:  number;
+        ai_image:       number;
+        fft_artifacts:  number;
+        ela_forgery:    number;
+        temporal:       number;
+        audio_anomaly:  number;
     };
+    caption:        string;
+    factCheck:      { title: string; url: string; source: string; date: string }[];
+    clipIdentity: {
+        title:       string;
+        uploader:    string;
+        platform:    string;
+        uploadDate:  string;
+        viewCount:   number | null;
+        likeCount:   number | null;
+        description: string;
+        tags:        string[];
+        isKnownClip: boolean;
+        clipNews:    { title: string; url: string; source: string; date: string }[];
+        originalUrl: string;
+    };
+    personalities: {
+        name:       string;
+        confidence: number;
+        frameIndex: number;
+        news:       { title: string; url: string; source: string; date: string }[];
+    }[];
+    audioLabel:     string;
+    framesAnalysed: number;
+    durationSec:    number;
+    sourceUrl:      string;
+    models:         Record<string, string>;
 }
 
-// ── Stage 1: Metadata Forensics ──────────────────────────────────────
+// ── Detect platform from URL ─────────────────────────────────────────
+export function detectPlatform(url: string): string {
+    const u = url.toLowerCase();
+    if (u.includes("youtube.com") || u.includes("youtu.be")) return "youtube";
+    if (u.includes("instagram.com")) return "instagram";
+    if (u.includes("tiktok.com")) return "tiktok";
+    if (u.includes("twitter.com") || u.includes("x.com")) return "twitter";
+    return "unknown";
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// MAIN PIPELINE — calls the Kaggle Flask backend via ngrok static domain
+// ══════════════════════════════════════════════════════════════════════
+export async function runPipeline(videoUrl: string, _platform: string): Promise<PipelineResult> {
+    const backendUrl = process.env.PIPELINE_URL?.replace(/\/$/, "");
+    if (!backendUrl) {
+        throw new Error(
+            "PIPELINE_URL is not set. Add it to .env.local:\n" +
+            "  PIPELINE_URL=https://your-static-domain.ngrok-free.app"
+        );
+    }
+
+    const controller = new AbortController();
+    // Kaggle can take 3-5 min on first request (model load); allow up to 8 min
+    const timer = setTimeout(() => controller.abort(), 8 * 60 * 1000);
+
+    try {
+        const response = await fetch(`${backendUrl}/api/extension/verify`, {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ videoUrl }),
+            signal:  controller.signal,
+        });
+
+        if (!response.ok) {
+            const err = await response.text().catch(() => response.statusText);
+            throw new Error(`Backend returned ${response.status}: ${err}`);
+        }
+
+        const json = await response.json();
+
+        if (!json.success || !json.result) {
+            throw new Error(json.error || "Unexpected response from backend");
+        }
+
+        return json.result as PipelineResult;
+    } catch (err: any) {
+        if (err.name === "AbortError") {
+            throw new Error("Pipeline timed out after 8 minutes. Is the Kaggle notebook running?");
+        }
+        throw err;
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
+// ── DEAD CODE BELOW \u2014 kept here only as reference, no longer called \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 function analyzeMetadata(url: string, platform: string) {
     const findings: string[] = [];
     let score = 0;

@@ -1,35 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { saveScan } from "@/lib/scanStore";
+import { connectToDatabase } from "@/dbconfig/dbconfig";
+import Scan from "@/models/ScanModel";
 
-export async function POST(req: NextRequest) {
-  try {
-    const formData = await req.formData();
-    const file = formData.get("file") as File | null;
-
-    if (!file) {
-      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+/** GET /api/scans  — returns all scan history (newest first) */
+export async function GET(req: NextRequest) {
+    try {
+        await connectToDatabase();
+    } catch {
+        return NextResponse.json({ success: true, scans: [] });
     }
+    const { searchParams } = new URL(req.url);
+    const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 100);
 
-    const scanId = crypto.randomUUID();
+    const scans = await Scan.find({})
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .lean();
 
-    // Fake AI result (replace later with real model)
-    const result = {
-      label: Math.random() > 0.5 ? "AI Generated" : "Human Written",
-      confidence: Number((Math.random() * 0.4 + 0.6).toFixed(2)),
-    };
-
-    saveScan({
-      id: scanId,
-      label: result.label,
-      confidence: result.confidence,
-      createdAt: new Date(),
-    });
-
-    return NextResponse.json({
-      success: true,
-      scanId,
-    });
-  } catch (error) {
-    return NextResponse.json({ error: "Scan failed" }, { status: 500 });
-  }
+    return NextResponse.json({ success: true, scans });
 }
